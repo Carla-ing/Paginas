@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+#Paginas
 <html lang="es">
 <head>
     <meta charset="UTF-8">
