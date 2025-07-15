@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -428,3 +427,167 @@
             justify-content: center;
         }
     }
+
+</style>
+     
+</head>
+<body>
+    <div class="payment-section">
+        <div class="payment-header">
+            <div class="icon"></div>
+            <h2 class="payment-title">Tarjeta de crédito o débito</h2>
+        </div>
+
+    <!-- Sección de pagos móviles -->
+    <div class="mobile-payment-section">
+        <div class="mobile-payment-header">
+            <div class="icon"></div>
+            <h2 class="mobile-payment-title">Pagos móviles</h2>
+        </div>
+
+        <div class="mobile-payment-options">
+            <div class="mobile-payment-option" data-payment="yape">
+                <div class="mobile-icon yape">YAPE</div>
+                <div class="mobile-payment-name">Yape</div>
+                <div class="mobile-payment-desc">Pago rápido y seguro</div>
+            </div>
+            <div class="mobile-payment-option" data-payment="plin">
+                <div class="mobile-icon plin">PLIN</div>
+                <div class="mobile-payment-name">Plin</div>
+                <div class="mobile-payment-desc">Transferencia inmediata</div>
+            </div>
+        </div>
+
+        <div class="qr-section" id="yape-qr">
+            <div class="qr-code">
+                <img src="https://suministrosperu.com/wp-content/uploads/2016/01/YAPE-QR.png" alt="Código QR Yape" style="width: 100%; height: 100%; object-fit: contain; border-radius: 8px;">
+            </div>
+            <div class="qr-instructions">
+                <strong>Instrucciones para Yape:</strong><br>
+                1. Abre tu app Yape<br>
+                2. Selecciona "Yapear"<br>
+                3. Escanea este código QR<br>
+                4. Confirma el pago por S/. XX.XX
+            </div>
+        </div>
+
+        <div class="qr-section" id="plin-qr">
+            <div class="qr-code">
+                <img src="https://suministrosperu.com/wp-content/uploads/2016/01/YAPE-QR.png" alt="Código QR Plin" style="width: 100%; height: 100%; object-fit: contain; border-radius: 8px;">
+            </div>
+            <div class="qr-instructions">
+                <strong>Instrucciones para Plin:</strong><br>
+                1. Abre tu app Plin<br>
+                2. Selecciona "Pagar con QR"<br>
+                3. Escanea este código QR<br>
+                4. Confirma el pago por S/. XX.XX
+            </div>
+        </div>
+    </div>
+
+        <div class="card-icons">
+            <div class="card-icon visa">VISA</div>
+            <div class="card-icon mastercard">MC</div>
+            <div class="card-icon amex">AMEX</div>
+            <div class="security-icon"></div>
+        </div>
+
+        <form>
+            <div class="form-group">
+                <label class="form-label">Número de la tarjeta</label>
+                <div class="card-number-input">
+                    <div class="card-icon-input"></div>
+                    <input type="text" class="form-input" placeholder="0000 0000 0000 0000" maxlength="19">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Fecha de vencimiento</label>
+                    <input type="text" class="form-input" placeholder="MM/AA" maxlength="5">
+                </div>
+                <div class="form-group security-group">
+                    <label class="form-label">Código de seguridad</label>
+                    <input type="text" class="form-input" placeholder="123" maxlength="4">
+                    <div class="security-help"></div>
+                </div>
+            </div>
+
+            <div class="checkbox-group">
+                <input type="checkbox" class="checkbox" id="save-card">
+                <div>
+                    <label for="save-card" class="checkbox-label">
+                        Guardar la tarjeta para futuras compras.
+                    </label>
+                    <div class="checkbox-description">
+                        Esto no afectará la forma en la que pagas por las suscripciones existentes y lo puedes administrar en cualquier momento desde la página de tu cuenta.
+                    </div>
+                </div>
+            </div>
+        </form>
+<button type="button" class="confirm-button" onclick="confirmarCompra()">Confirmar Compra</button>
+
+    </div>
+ 
+    <script>
+    // Formatear número de tarjeta
+    document.querySelector('.card-number-input input').addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+        let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
+        e.target.value = formattedValue;
+    });
+
+    // Formatear fecha de vencimiento
+    document.querySelector('.form-row input[placeholder="MM/AA"]').addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.length >= 2) {
+            value = value.substring(0, 2) + '/' + value.substring(2, 4);
+        }
+        e.target.value = value;
+    });
+
+    // Solo números para código de seguridad
+    document.querySelector('.security-group input').addEventListener('input', function(e) {
+        e.target.value = e.target.value.replace(/[^0-9]/g, '');
+    });
+
+    // Manejar checkbox personalizado
+    document.querySelector('.checkbox').addEventListener('change', function(e) {
+        if (e.target.checked) {
+            e.target.style.backgroundColor = '#007bff';
+            e.target.style.borderColor = '#007bff';
+        } else {
+            e.target.style.backgroundColor = 'transparent';
+            e.target.style.borderColor = '#ddd';
+        }
+    });
+
+    // Manejar selección de pago móvil
+    document.querySelectorAll('.mobile-payment-option').forEach(option => {
+        option.addEventListener('click', function() {
+            document.querySelectorAll('.mobile-payment-option').forEach(opt => {
+                opt.classList.remove('active');
+            });
+
+            document.querySelectorAll('.qr-section').forEach(qr => {
+                qr.classList.remove('active');
+            });
+
+            this.classList.add('active');
+
+            const paymentType = this.getAttribute('data-payment');
+            const qrSection = document.getElementById(paymentType + '-qr');
+            if (qrSection) {
+                qrSection.classList.add('active');
+            }
+        });
+    });
+
+    // Confirmar compra
+    function confirmarCompra() {
+        alert("✅ Compra realizada con éxito.");
+    }
+</script>
+
+</body>
+</html>
